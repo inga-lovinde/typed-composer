@@ -1,0 +1,41 @@
+{
+  "name": "@typed-composer/core",
+  "version": "0.0.0",
+  "description": "Core functionality for @typed-composer",
+  "files": "lib/**/*",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint ./src/ --ext .js,.jsx,.ts,.tsx",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "postversion": "git push && git push --tags",
+    "test": "ts-mocha src/**/*.spec.ts",
+    "version": "git add -A src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/inga-lovinde/typed-composer.git"
+  },
+  "keywords": [],
+  "author": "Inga Lovinde",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/inga-lovinde/typed-composer/issues"
+  },
+  "homepage": "https://github.com/inga-lovinde/typed-composer#readme",
+  "devDependencies": {
+    "@types/mocha": "^5.2.7",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-fp": "^2.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "mocha": "^6.2.2",
+    "ts-mocha": "^6.0.0",
+    "typescript": "^3.7.2"
+  }
+}
