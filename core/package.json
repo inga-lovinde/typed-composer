@@ -1,6 +1,6 @@
 {
   "name": "@typed-composer/core",
-  "version": "0.0.0",
+  "version": "0.0.1-0",
   "description": "Core functionality for @typed-composer",
   "files": "lib/**/*",
   "main": "lib/index.js",
