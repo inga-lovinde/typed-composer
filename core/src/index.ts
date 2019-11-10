@@ -1,22 +1,22 @@
-export type Composer<TBase, TCurrent, TPlugins> = {
+export type Composer<TBase, TCurrent> = {
     withTransform<TInner>(
         transform: (value: TInner) => TCurrent
-    ): Composer<TBase, TInner, TPlugins>;
+    ): Composer<TBase, TInner>;
 
     finish(
         value: TCurrent
     ): TBase;
 };
 
-function withTransformFactory<TBase, TCurrent, TInner, TPlugins>(
-    currentComposer: Composer<TBase, TCurrent, TPlugins>,
+function withTransformFactory<TBase, TCurrent, TInner>(
+    currentComposer: Composer<TBase, TCurrent>,
     transform: (value: TInner) => TCurrent,
-): Composer<TBase, TInner, TPlugins> {
-    const result: Composer<TBase, TInner, TPlugins> = {
+): Composer<TBase, TInner> {
+    const result: Composer<TBase, TInner> = {
         withTransform<TInnerNew>(
             transformNew: (value: TInnerNew) => TInner,
-        ): Composer<TBase, TInnerNew, TPlugins> {
-            return withTransformFactory<TBase, TInner, TInnerNew, TPlugins>(result, transformNew);
+        ): Composer<TBase, TInnerNew> {
+            return withTransformFactory<TBase, TInner, TInnerNew>(result, transformNew);
         },
 
         finish(
@@ -30,12 +30,12 @@ function withTransformFactory<TBase, TCurrent, TInner, TPlugins>(
 }
 
 // eslint-disable-next-line import/prefer-default-export
-export function createComposer<TBase, TPlugins = {}>(): Composer<TBase, TBase, TPlugins> {
-    const result: Composer<TBase, TBase, TPlugins> = {
+export function createComposer<TBase>(): Composer<TBase, TBase> {
+    const result: Composer<TBase, TBase> = {
         withTransform<TInner>(
             transform: (value: TInner) => TBase,
-        ): Composer<TBase, TInner, TPlugins> {
-            return withTransformFactory<TBase, TBase, TInner, TPlugins>(result, transform);
+        ): Composer<TBase, TInner> {
+            return withTransformFactory<TBase, TBase, TInner>(result, transform);
         },
 
         finish(
