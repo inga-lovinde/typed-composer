@@ -1,9 +1,19 @@
 import { ComponentType } from "react";
-import { ReactLifeCycleFunctions } from "@hocs/with-lifecycle";
+
+export type ReactLifeCycleFunctions<TProps, TSnapshot> = {
+    onConstructor?: (props: TProps) => void;
+    onWillMount?: (props: TProps) => void;
+    onDidMount?: (props: TProps) => void;
+    onReceiveProps?: (props: TProps, nextProps: TProps) => void;
+    onGetSnapshotBeforeUpdate?: (prevProps: TProps, props: TProps) => TSnapshot;
+    onDidUpdate?: (prevProps: TProps, props: TProps, snapshot: TSnapshot) => void;
+    onWillUnmount?: (props: TProps) => void;
+    onDidCatch?: (error: Error, info: React.ErrorInfo) => void;
+}
 
 export type InnerProps<TOuterProps, TAddedProps = {}, TRemovedProps = {}> = Omit<TOuterProps, keyof TRemovedProps> & TAddedProps;
 
-export interface StateUpdaters<TOuterProps, TState extends {}> {
+export type StateUpdaters<TOuterProps, TState extends {}> = {
     [updaterName: string]: (state: TState, props: TOuterProps) => (...payload: any[]) => TState;
 };
 
@@ -32,7 +42,7 @@ export type TransformsType<TCurrentProps> = {
     pure(): Transform<TCurrentProps, TCurrentProps>;
 };
 
-export interface ReactComposerType<TBaseProps, TCurrentProps> {
+export type ReactComposerType<TBaseProps, TCurrentProps> = {
     withLifecycle<TSnapshot>(spec: ReactLifeCycleFunctions<TCurrentProps, TSnapshot>): ReactComposerType<TBaseProps, TCurrentProps>;
 
     withStateHandlers<TState extends {}, TStateName extends string, TUpdaters extends StateUpdaters<TCurrentProps, TState>>(

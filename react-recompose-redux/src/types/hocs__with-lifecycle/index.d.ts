@@ -4,7 +4,7 @@ declare module '@hocs/with-lifecycle' {
     import * as React from 'react';
     import * as Recompose from 'recompose';
 
-    export interface ReactLifeCycleFunctions<TProps, TSnapshot> {
+    export type ReactLifeCycleFunctions<TProps, TSnapshot> = {
         onConstructor?: (props: TProps) => void;
         onWillMount?: (props: TProps) => void;
         onDidMount?: (props: TProps) => void;
