@@ -1,7 +1,7 @@
 {
-  "name": "@typed-composer/core",
+  "name": "@typed-composer/react-recompose-redux",
   "version": "0.1.0",
-  "description": "Core functionality for @typed-composer",
+  "description": "Standard strongly-typed recompose library, with redux support",
   "files": "lib/**/*",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -12,7 +12,7 @@
     "prepublishOnly": "npm test && npm run lint",
     "preversion": "npm run lint",
     "postversion": "git push && git push --tags",
-    "test": "ts-mocha src/**/*.spec.ts",
+    "test": "ts-mocha src/**/*.spec.ts*",
     "version": "git add -A src"
   },
   "repository": {
@@ -27,15 +27,32 @@
   },
   "homepage": "https://github.com/inga-lovinde/typed-composer#readme",
   "devDependencies": {
+    "@types/lodash.mapvalues": "^4.6.6",
     "@types/mocha": "^5.2.7",
+    "@types/recompose": "^0.30.7",
     "@typescript-eslint/eslint-plugin": "^2.6.1",
     "@typescript-eslint/parser": "^2.6.1",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-fp": "^2.3.0",
     "eslint-plugin-import": "^2.18.2",
+    "jsdom": "^15.2.1",
     "mocha": "^6.2.2",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "ts-mocha": "^6.0.0",
     "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "@hocs/with-lifecycle": "^0.5.1",
+    "@typed-composer/core": "^0.1.0",
+    "@types/react": "*",
+    "lodash.mapvalues": "^4.6.0",
+    "recompose": "^0.30.0"
+  },
+  "peerDependencies": {
+    "react": "*"
   }
 }
