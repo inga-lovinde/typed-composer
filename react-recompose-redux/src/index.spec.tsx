@@ -31,6 +31,8 @@ const testString = (counter: number | string): counter is string => typeof count
 
 describe("React composer usage suite", () => {
     it("should work as expected", () => {
+        const logData = [];
+
         const Component = createReactComposer<{ title: string }>()
             .withStateHandlers(
                 10 as (number | string),
@@ -49,7 +51,7 @@ describe("React composer usage suite", () => {
                 }
             )
             .withLifecycle({
-                onDidMount: ({ decrement }) => decrement(3)
+                onDidMount: ({ decrement }) => decrement(4)
             })
             .omitProps<"decrement">()
             .branchByProp(
@@ -57,22 +59,34 @@ describe("React composer usage suite", () => {
                 testString,
                 ({ counter }) => <div className="text">{ `Fail: ${counter}/${counter.length}` }</div>
             )
-            .finishPure(({ title, counter, increment }) => (
+            .withHandlers({
+                writeLog: ({ counter, increment }) => (prefix: string) => {
+                    logData.push(`${prefix}-${counter * 2}`);
+                    increment(1);
+                },
+            })
+            .finishPure(({ title, counter, increment, writeLog }) => (
                 <div>
                     <div className="text">{ `${title}-${counter * counter}` }</div>
-                    <button onClick={ () => increment(1) }>Increment</button>
+                    <button className="increment" onClick={ () => increment(1) }>Increment</button>
+                    <button className="logA" onClick={ () => writeLog("A") }>Write A</button>
+                    <button className="logB" onClick={ () => writeLog("B") }>Write B</button>
                 </div>
             ));
 
         const wrapper = mount(<Component title="Hello"/>);
+        equal(wrapper.find('.text').text(), "Hello-36");
+        wrapper.find('.increment').simulate('click');
         equal(wrapper.find('.text').text(), "Hello-49");
-        wrapper.find('button').simulate('click');
+        wrapper.find('.logA').simulate('click');
+        equal(logData.join(), "A-14");
         equal(wrapper.find('.text').text(), "Hello-64");
-        wrapper.find('button').simulate('click');
-        wrapper.find('button').simulate('click');
-        wrapper.find('button').simulate('click');
+        wrapper.find('.increment').simulate('click');
+        wrapper.find('.logB').simulate('click');
+        wrapper.find('.increment').simulate('click');
         equal(wrapper.find('.text').text(), "Hello-121");
-        wrapper.find('button').simulate('click');
+        wrapper.find('.logA').simulate('click');
         equal(wrapper.find('.text').text(), "Fail: overload/8");
+        equal(logData.join(), "A-14,B-18,A-22");
     });
 });

@@ -1,7 +1,7 @@
 import { ComponentType } from "react";
 import { ReactLifeCycleFunctions } from '@hocs/with-lifecycle';
 import { Composer } from "@typed-composer/core";
-import { ReactComposerType, InnerProps, StateUpdaters, ExtractStateHandlers } from "./transform-types";
+import { ReactComposerType, InnerProps, StateUpdaters, Handlers } from "./transform-types";
 import createTransforms from "./transforms";
 
 function createReactComposerWithCore<TBaseProps, TCurrentProps>(coreComposer: Composer<ComponentType<TBaseProps>, ComponentType<TCurrentProps>>): ReactComposerType<TBaseProps, TCurrentProps> {
@@ -17,6 +17,11 @@ function createReactComposerWithCore<TBaseProps, TCurrentProps>(coreComposer: Co
             stateUpdaters: TUpdaters,
         ) {
             return createReactComposerWithCore(coreComposer.withTransform(transforms.withStateHandlers(createState, stateName, stateUpdaters)));
+        },
+        withHandlers<THandlers extends Handlers<TCurrentProps>>(
+            handlers: THandlers,
+        ) {
+            return createReactComposerWithCore(coreComposer.withTransform(transforms.withHandlers(handlers)));
         },
         omitProps<TPropsToOmit extends keyof TCurrentProps>() {
             const transform = transforms.omitProps<TPropsToOmit>();

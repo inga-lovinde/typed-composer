@@ -21,6 +21,14 @@ export type ExtractStateHandlers<TOuterProps, TState, TStateUpdaters extends Sta
     [handlerName in keyof TStateUpdaters]: (...payload: Parameters<ReturnType<TStateUpdaters[handlerName]>>) => void;
 };
 
+export type Handlers<TProps> = {
+    [handlerName: string]: (props: TProps) => (...payload: any[]) => void;
+};
+
+export type ExtractHandlers<TProps, THandlers extends Handlers<TProps>> = {
+    [handlerName in keyof THandlers]: (...payload: Parameters<ReturnType<THandlers[handlerName]>>) => void;
+};
+
 export type Transform<TBaseProps, TCurrentProps> = (component: ComponentType<TCurrentProps>) => ComponentType<TBaseProps>;
 
 export type TransformsType<TCurrentProps> = {
@@ -31,6 +39,10 @@ export type TransformsType<TCurrentProps> = {
         stateName: TStateName,
         stateUpdaters: TUpdaters,
     ): Transform<TCurrentProps, InnerProps<TCurrentProps, Record<TStateName, TState> & ExtractStateHandlers<TCurrentProps, TState, TUpdaters>>>;
+
+    withHandlers<THandlers extends Handlers<TCurrentProps>>(
+        handlers: THandlers,
+    ): Transform<TCurrentProps, InnerProps<TCurrentProps, ExtractHandlers<TCurrentProps, THandlers>>>;
 
     omitProps<TPropsToOmit extends keyof TCurrentProps>(): Transform<TCurrentProps, InnerProps<TCurrentProps, {}, Pick<TCurrentProps, TPropsToOmit>>>;
 
@@ -56,6 +68,10 @@ export type ReactComposerType<TBaseProps, TCurrentProps> = {
         stateName: TStateName,
         stateUpdaters: TUpdaters,
     ): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, Record<TStateName, TState> & ExtractStateHandlers<TCurrentProps, TState, TUpdaters>>>;
+
+    withHandlers<THandlers extends Handlers<TCurrentProps>>(
+        handlers: THandlers,
+    ): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, ExtractHandlers<TCurrentProps, THandlers>>>;
 
     omitProps<TPropsToOmit extends keyof TCurrentProps>(): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, {}, Pick<TCurrentProps, TPropsToOmit>>>;
 

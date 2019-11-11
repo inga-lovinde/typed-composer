@@ -1,7 +1,7 @@
 import { ComponentType } from "react";
 import withLifecycle, { ReactLifeCycleFunctions } from "@hocs/with-lifecycle";
-import { branch, pure, renderComponent, withStateHandlers } from "recompose";
-import { TransformsType, Transform, InnerProps, StateUpdaters, ExtractStateHandlers } from './transform-types';
+import { branch, pure, renderComponent, withHandlers, withStateHandlers } from "recompose";
+import { TransformsType, Transform, InnerProps, StateUpdaters, ExtractStateHandlers, Handlers, ExtractHandlers } from './transform-types';
 const mapValues = require("lodash.mapvalues");
 
 type ExtractStateHandlersForRecompose<TOuterProps, TState, TStateName extends string, TStateUpdaters extends StateUpdaters<TOuterProps, TState>> = {
@@ -43,6 +43,12 @@ function createTransforms<TCurrentProps>(): TransformsType<TCurrentProps> {
                     },
                 ) as ExtractStateUpdatersForRecompose<TCurrentProps, TState, TStateName, TUpdaters>,
             ) as Transform<TCurrentProps, InnerProps<TCurrentProps, Record<TStateName, TState> & ExtractStateHandlers<TCurrentProps, TState, TUpdaters>>>;
+        },
+
+        withHandlers<THandlers extends Handlers<TCurrentProps>>(
+            handlers: THandlers,
+        ) {
+            return withHandlers(handlers) as Transform<TCurrentProps, InnerProps<TCurrentProps, ExtractHandlers<TCurrentProps, THandlers>>>;
         },
 
         omitProps<TPropsToOmit extends keyof TCurrentProps>() {
