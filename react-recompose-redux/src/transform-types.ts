@@ -22,11 +22,11 @@ export type ExtractStateHandlers<TOuterProps, TState, TStateUpdaters extends Sta
 };
 
 export type Handlers<TProps> = {
-    [handlerName: string]: (props: TProps) => (...payload: any[]) => void;
+    [handlerName: string]: (props: TProps) => (...payload: any[]) => any;
 };
 
 export type ExtractHandlers<TProps, THandlers extends Handlers<TProps>> = {
-    [handlerName in keyof THandlers]: (...payload: Parameters<ReturnType<THandlers[handlerName]>>) => void;
+    [handlerName in keyof THandlers]: (...payload: Parameters<ReturnType<THandlers[handlerName]>>) => ReturnType<ReturnType<THandlers[handlerName]>>;
 };
 
 export type Transform<TBaseProps, TCurrentProps> = (component: ComponentType<TCurrentProps>) => ComponentType<TBaseProps>;
