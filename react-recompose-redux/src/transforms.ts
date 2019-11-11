@@ -56,6 +56,14 @@ function createTransforms<TCurrentProps>(): TransformsType<TCurrentProps> {
             return branch(test, renderComponent(trueComponent));
         },
 
+        branchByProp<TPropName extends keyof TCurrentProps, TPropToExclude extends TCurrentProps[TPropName]>(
+            propName: TPropName,
+            test: (prop: TCurrentProps[TPropName]) => prop is TPropToExclude,
+            trueComponent: ComponentType<InnerProps<TCurrentProps, Record<TPropName, TPropToExclude>, Pick<TCurrentProps, TPropName>>>,
+        ) {
+            return branch(({ [propName]: prop }) => test(prop), renderComponent(trueComponent));
+        },
+
         pure() {
             return (component) => pure(component);
         },

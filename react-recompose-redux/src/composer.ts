@@ -28,6 +28,13 @@ function createReactComposerWithCore<TBaseProps, TCurrentProps>(coreComposer: Co
         ) {
             return createReactComposerWithCore(coreComposer.withTransform(transforms.branch(test, trueComponent)));
         },
+        branchByProp<TPropName extends keyof TCurrentProps, TPropToExclude extends TCurrentProps[TPropName]>(
+            propName: TPropName,
+            test: (prop: TCurrentProps[TPropName]) => prop is TPropToExclude,
+            trueComponent: ComponentType<InnerProps<TCurrentProps, Record<TPropName, TPropToExclude>, Pick<TCurrentProps, TPropName>>>,
+        ) {
+            return createReactComposerWithCore(coreComposer.withTransform(transforms.branchByProp(propName, test, trueComponent)));
+        },
         finishPure(component) {
             return coreComposer.withTransform(transforms.pure()).finish(component);
         },

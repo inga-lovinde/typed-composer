@@ -39,6 +39,12 @@ export type TransformsType<TCurrentProps> = {
         trueComponent: ComponentType<TPropsToExclude>,
     ): Transform<TCurrentProps, Exclude<TCurrentProps, TPropsToExclude>>;
 
+    branchByProp<TPropName extends keyof TCurrentProps, TPropToExclude extends TCurrentProps[TPropName]>(
+        propName: TPropName,
+        test: (prop: TCurrentProps[TPropName]) => prop is TPropToExclude,
+        trueComponent: ComponentType<InnerProps<TCurrentProps, Record<TPropName, TPropToExclude>, Pick<TCurrentProps, TPropName>>>,
+    ): Transform<TCurrentProps, InnerProps<TCurrentProps, Record<TPropName, Exclude<TCurrentProps[TPropName], TPropToExclude>>, Pick<TCurrentProps, TPropName>>>;
+
     pure(): Transform<TCurrentProps, TCurrentProps>;
 };
 
@@ -57,6 +63,12 @@ export type ReactComposerType<TBaseProps, TCurrentProps> = {
         test: (props: TCurrentProps) => props is TPropsToExclude,
         trueComponent: ComponentType<TPropsToExclude>,
     ): ReactComposerType<TBaseProps, Exclude<TCurrentProps, TPropsToExclude>>;
+
+    branchByProp<TPropName extends keyof TCurrentProps, TPropToExclude extends TCurrentProps[TPropName]>(
+        propName: TPropName,
+        test: (prop: TCurrentProps[TPropName]) => prop is TPropToExclude,
+        trueComponent: ComponentType<InnerProps<TCurrentProps, Record<TPropName, TPropToExclude>, Pick<TCurrentProps, TPropName>>>,
+    ): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, Record<TPropName, Exclude<TCurrentProps[TPropName], TPropToExclude>>, Pick<TCurrentProps, TPropName>>>;
 
     finishPure(component: ComponentType<TCurrentProps>): ComponentType<TBaseProps>;
 };
