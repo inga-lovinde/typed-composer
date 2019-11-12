@@ -23,9 +23,14 @@ function createReactComposerWithCore<TBaseProps, TCurrentProps>(coreComposer: Co
         ) {
             return createReactComposerWithCore(coreComposer.withTransform(transforms.withHandlers(handlers)));
         },
+        withRedux<TReduxState extends {} = {}, TStateProps extends {} = {}, TDispatchProps extends { [keyName: string]: Function } = {}>(
+            mapStateToProps: ((state: TReduxState, ownProps: TCurrentProps) => TStateProps) | null | undefined,
+            mapDispatchToProps: ((dispatch: (action: any) => void, ownProps: TCurrentProps) => TDispatchProps) | null | undefined,
+        ) {
+            return createReactComposerWithCore(coreComposer.withTransform(transforms.withRedux(mapStateToProps, mapDispatchToProps)));
+        },
         omitProps<TPropsToOmit extends keyof TCurrentProps>() {
-            const transform = transforms.omitProps<TPropsToOmit>();
-            return createReactComposerWithCore(coreComposer.withTransform(transform));
+            return createReactComposerWithCore(coreComposer.withTransform(transforms.omitProps<TPropsToOmit>()));
         },
         branch<TPropsToExclude extends TCurrentProps>(
             test: (props: TCurrentProps) => props is TPropsToExclude,

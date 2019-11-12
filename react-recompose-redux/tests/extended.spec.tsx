@@ -1,31 +1,7 @@
 import { equal } from "assert";
-import { configure, mount } from "enzyme";
 import * as React from "react";
-import createReactComposer from "./index";
-import { JSDOM } from "jsdom";
-const Adapter = require("enzyme-adapter-react-16");
-
-function setUpDomEnvironment() {
-    const dom = new JSDOM('<!doctype html><html><body></body></html>', {url: 'http://localhost/'});
-    const { window } = dom;
-
-    global.window = window;
-    global.document = window.document;
-    global.navigator = {
-        userAgent: 'node.js',
-    };
-    copyProps(window, global);
-}
-
-function copyProps(src, target) {
-    const props = Object.getOwnPropertyNames(src)
-        .filter(prop => typeof target[prop] === 'undefined')
-        .map(prop => Object.getOwnPropertyDescriptor(src, prop));
-    Object.defineProperties(target, props);
-}
-
-setUpDomEnvironment();
-configure({ adapter: new Adapter() });
+import createReactComposer from "../src";
+import { mount } from "./enzyme";
 
 const testString = (counter: number | string): counter is string => typeof counter === "string";
 
@@ -63,6 +39,7 @@ describe("React composer usage suite", () => {
                 writeLog: ({ counter, increment }) => (prefix: string) => {
                     logData.push(`${prefix}-${counter * 2}`);
                     increment(1);
+                    return true;
                 },
             })
             .finishPure(({ title, counter, increment, writeLog }) => (

@@ -44,6 +44,11 @@ export type TransformsType<TCurrentProps> = {
         handlers: THandlers,
     ): Transform<TCurrentProps, InnerProps<TCurrentProps, ExtractHandlers<TCurrentProps, THandlers>>>;
 
+    withRedux<TReduxState extends {} = {}, TStateProps extends {} = {}, TDispatchProps extends { [keyName: string]: Function } = {}>(
+        mapStateToProps: ((state: TReduxState, ownProps: TCurrentProps) => TStateProps) | null | undefined,
+        mapDispatchToProps: ((dispatch: (action: any) => void, ownProps: TCurrentProps) => TDispatchProps) | null | undefined,
+    ): Transform<TCurrentProps, InnerProps<TCurrentProps, TStateProps & TDispatchProps>>;
+
     omitProps<TPropsToOmit extends keyof TCurrentProps>(): Transform<TCurrentProps, InnerProps<TCurrentProps, {}, Pick<TCurrentProps, TPropsToOmit>>>;
 
     branch<TPropsToExclude extends TCurrentProps>(
@@ -72,6 +77,11 @@ export type ReactComposerType<TBaseProps, TCurrentProps> = {
     withHandlers<THandlers extends Handlers<TCurrentProps>>(
         handlers: THandlers,
     ): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, ExtractHandlers<TCurrentProps, THandlers>>>;
+
+    withRedux<TReduxState extends {} = {}, TStateProps extends {} = {}, TDispatchProps extends { [keyName: string]: Function } = {}>(
+        mapStateToProps: ((state: TReduxState, ownProps: TCurrentProps) => TStateProps) | null | undefined,
+        mapDispatchToProps: ((dispatch: (action: any) => void, ownProps: TCurrentProps) => TDispatchProps) | null | undefined,
+    ): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, TStateProps & TDispatchProps>>;
 
     omitProps<TPropsToOmit extends keyof TCurrentProps>(): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, {}, Pick<TCurrentProps, TPropsToOmit>>>;
 
