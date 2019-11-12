@@ -29,6 +29,11 @@ function createReactComposerWithCore<TBaseProps, TCurrentProps>(coreComposer: Co
         ) {
             return createReactComposerWithCore(coreComposer.withTransform(transforms.withRedux(mapStateToProps, mapDispatchToProps)));
         },
+        withDefaultProps<TDefaultProps extends Partial<TCurrentProps>>(
+            defaultProps: TDefaultProps
+        ) {
+            return createReactComposerWithCore(coreComposer.withTransform(transforms.withDefaultProps(defaultProps)));
+        },
         withProps<TNewProps extends {}>(
             createNewProps: (props: TCurrentProps) => TNewProps
         ) {

@@ -1,8 +1,8 @@
 import { ComponentType } from "react";
 import withLifecycle, { ReactLifeCycleFunctions } from "@hocs/with-lifecycle";
 import { connect } from "react-redux";
-import { branch, pure, renderComponent, withHandlers, withProps, withStateHandlers } from "recompose";
-import { TransformsType, Transform, InnerProps, StateUpdaters, ExtractStateHandlers, Handlers, ExtractHandlers } from './transform-types';
+import { branch, defaultProps, pure, renderComponent, withHandlers, withProps, withStateHandlers } from "recompose";
+import { TransformsType, Transform, InnerProps, StateUpdaters, ExtractStateHandlers, Handlers, ExtractHandlers, ExtractPropsAfterDefault } from './transform-types';
 const mapValues = require("lodash.mapvalues");
 
 type ExtractStateHandlersForRecompose<TOuterProps, TState, TStateName extends string, TStateUpdaters extends StateUpdaters<TOuterProps, TState>> = {
@@ -57,6 +57,13 @@ function createTransforms<TCurrentProps>(): TransformsType<TCurrentProps> {
             mapDispatchToProps: ((dispatch: (action: any) => void, ownProps: TCurrentProps) => TDispatchProps) | null | undefined,
         ) {
             return connect(mapStateToProps, mapDispatchToProps) as Transform<TCurrentProps, InnerProps<TCurrentProps, TStateProps & TDispatchProps>>;
+        },
+
+        withDefaultProps<TDefaultProps extends Partial<TCurrentProps>>(
+            defaultPropsArgument: TDefaultProps
+        ) {
+            // recompose `defaultProps` is not strongly typed, so we have to cast it to `any` here
+            return defaultProps(defaultPropsArgument) as any as Transform<TCurrentProps, ExtractPropsAfterDefault<TCurrentProps, TDefaultProps>>;
         },
 
         withProps<TNewProps extends {}>(

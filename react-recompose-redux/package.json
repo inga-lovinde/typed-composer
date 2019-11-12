@@ -1,6 +1,6 @@
 {
   "name": "@typed-composer/react-recompose-redux",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Standard strongly-typed recompose library, with redux support",
   "files": "lib/**/*",
   "main": "lib/index.js",

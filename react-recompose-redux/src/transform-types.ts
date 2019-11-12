@@ -29,6 +29,12 @@ export type ExtractHandlers<TProps, THandlers extends Handlers<TProps>> = {
     [handlerName in keyof THandlers]: (...payload: Parameters<ReturnType<THandlers[handlerName]>>) => ReturnType<ReturnType<THandlers[handlerName]>>;
 };
 
+type Coalesce<TA, TB> = TA extends Exclude<TA, null | undefined> ? Exclude<TB, null | undefined> : TB;
+
+export type ExtractPropsAfterDefault<TProps, TDefaultProps> = TProps & {
+    [propName in keyof TDefaultProps & keyof TProps]: Coalesce<TDefaultProps[propName], TProps[propName]>;
+};
+
 export type Transform<TBaseProps, TCurrentProps> = (component: ComponentType<TCurrentProps>) => ComponentType<TBaseProps>;
 
 export type TransformsType<TCurrentProps> = {
@@ -48,6 +54,10 @@ export type TransformsType<TCurrentProps> = {
         mapStateToProps: ((state: TReduxState, ownProps: TCurrentProps) => TStateProps) | null | undefined,
         mapDispatchToProps: ((dispatch: (action: any) => void, ownProps: TCurrentProps) => TDispatchProps) | null | undefined,
     ): Transform<TCurrentProps, InnerProps<TCurrentProps, TStateProps & TDispatchProps>>;
+
+    withDefaultProps<TDefaultProps extends Partial<TCurrentProps>>(
+        defaultProps: TDefaultProps
+    ): Transform<TCurrentProps, ExtractPropsAfterDefault<TCurrentProps, TDefaultProps>>;
 
     withProps<TNewProps extends {}>(
         createNewProps: (props: TCurrentProps) => TNewProps
@@ -86,6 +96,10 @@ export type ReactComposerType<TBaseProps, TCurrentProps> = {
         mapStateToProps: ((state: TReduxState, ownProps: TCurrentProps) => TStateProps) | null | undefined,
         mapDispatchToProps: ((dispatch: (action: any) => void, ownProps: TCurrentProps) => TDispatchProps) | null | undefined,
     ): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, TStateProps & TDispatchProps>>;
+
+    withDefaultProps<TDefaultProps extends Partial<TCurrentProps>>(
+        defaultProps: TDefaultProps
+    ): ReactComposerType<TBaseProps, ExtractPropsAfterDefault<TCurrentProps, TDefaultProps>>;
 
     withProps<TNewProps extends {}>(
         createNewProps: (props: TCurrentProps) => TNewProps

@@ -3,17 +3,38 @@ import * as React from "react";
 import createReactComposer from "../src";
 import { mount } from "./enzyme";
 
+type CasingStyle = "lower" | "upper";
+
+const changeCasing = (value: string, style: CasingStyle): string => {
+    switch (style) {
+        case 'lower':
+            return value.toLowerCase();
+        case 'upper':
+            return value.toUpperCase();
+        default:
+            throw Error("should never happen");
+    }
+}
+
 const testString = (counter: number | string): counter is string => typeof counter === "string";
 
 describe("React composer usage suite", () => {
     it("should work as expected", () => {
         const logData = [];
 
-        const Component = createReactComposer<{ titleRaw: string }>()
-            .withProps(({ titleRaw }) => ({
-                title: `${titleRaw.substring(0, 1).toUpperCase()}${titleRaw.substring(1).toLowerCase()}`,
+        const Component = createReactComposer<{
+            titleRaw: string,
+            titleStartCasing?: CasingStyle,
+            titleRestCasing?: CasingStyle,
+        }>()
+            .withDefaultProps({
+                titleStartCasing: "lower",
+                titleRestCasing: "lower",
+            })
+            .withProps(({ titleRaw, titleStartCasing, titleRestCasing }) => ({
+                title: `${changeCasing(titleRaw.substring(0, 1), titleStartCasing)}${changeCasing(titleRaw.substring(1), titleRestCasing)}`,
             }))
-            .omitProps<'titleRaw'>()
+            .omitProps<'titleRaw' | 'titleStartCasing' | 'titleRestCasing'>()
             .withStateHandlers(
                 10 as (number | string),
                 "counter",
@@ -55,7 +76,7 @@ describe("React composer usage suite", () => {
                 </div>
             ));
 
-        const wrapper = mount(<Component titleRaw="hElLo"/>);
+        const wrapper = mount(<Component titleRaw="hElLo" titleStartCasing="upper" />);
         equal(wrapper.find('.text').text(), "Hello-36");
         wrapper.find('.increment').simulate('click');
         equal(wrapper.find('.text').text(), "Hello-49");
