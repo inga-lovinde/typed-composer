@@ -29,6 +29,11 @@ function createReactComposerWithCore<TBaseProps, TCurrentProps>(coreComposer: Co
         ) {
             return createReactComposerWithCore(coreComposer.withTransform(transforms.withRedux(mapStateToProps, mapDispatchToProps)));
         },
+        withProps<TNewProps extends {}>(
+            createNewProps: (props: TCurrentProps) => TNewProps
+        ) {
+            return createReactComposerWithCore(coreComposer.withTransform(transforms.withProps(createNewProps)));
+        },
         omitProps<TPropsToOmit extends keyof TCurrentProps>() {
             return createReactComposerWithCore(coreComposer.withTransform(transforms.omitProps<TPropsToOmit>()));
         },

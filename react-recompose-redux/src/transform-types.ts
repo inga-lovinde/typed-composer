@@ -11,7 +11,7 @@ export type ReactLifeCycleFunctions<TProps, TSnapshot> = {
     onDidCatch?: (error: Error, info: React.ErrorInfo) => void;
 }
 
-export type InnerProps<TOuterProps, TAddedProps = {}, TRemovedProps = {}> = Omit<TOuterProps, keyof TRemovedProps> & TAddedProps;
+export type InnerProps<TOuterProps, TAddedProps = {}, TRemovedProps = {}> = Omit<TOuterProps, keyof TRemovedProps & keyof TAddedProps> & TAddedProps;
 
 export type StateUpdaters<TOuterProps, TState extends {}> = {
     [updaterName: string]: (state: TState, props: TOuterProps) => (...payload: any[]) => TState;
@@ -49,6 +49,10 @@ export type TransformsType<TCurrentProps> = {
         mapDispatchToProps: ((dispatch: (action: any) => void, ownProps: TCurrentProps) => TDispatchProps) | null | undefined,
     ): Transform<TCurrentProps, InnerProps<TCurrentProps, TStateProps & TDispatchProps>>;
 
+    withProps<TNewProps extends {}>(
+        createNewProps: (props: TCurrentProps) => TNewProps
+    ): Transform<TCurrentProps, InnerProps<TCurrentProps, TNewProps>>;
+
     omitProps<TPropsToOmit extends keyof TCurrentProps>(): Transform<TCurrentProps, InnerProps<TCurrentProps, {}, Pick<TCurrentProps, TPropsToOmit>>>;
 
     branch<TPropsToExclude extends TCurrentProps>(
@@ -82,6 +86,10 @@ export type ReactComposerType<TBaseProps, TCurrentProps> = {
         mapStateToProps: ((state: TReduxState, ownProps: TCurrentProps) => TStateProps) | null | undefined,
         mapDispatchToProps: ((dispatch: (action: any) => void, ownProps: TCurrentProps) => TDispatchProps) | null | undefined,
     ): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, TStateProps & TDispatchProps>>;
+
+    withProps<TNewProps extends {}>(
+        createNewProps: (props: TCurrentProps) => TNewProps
+    ): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, TNewProps>>;
 
     omitProps<TPropsToOmit extends keyof TCurrentProps>(): ReactComposerType<TBaseProps, InnerProps<TCurrentProps, {}, Pick<TCurrentProps, TPropsToOmit>>>;
 

@@ -1,7 +1,7 @@
 import { ComponentType } from "react";
 import withLifecycle, { ReactLifeCycleFunctions } from "@hocs/with-lifecycle";
 import { connect } from "react-redux";
-import { branch, pure, renderComponent, withHandlers, withStateHandlers } from "recompose";
+import { branch, pure, renderComponent, withHandlers, withProps, withStateHandlers } from "recompose";
 import { TransformsType, Transform, InnerProps, StateUpdaters, ExtractStateHandlers, Handlers, ExtractHandlers } from './transform-types';
 const mapValues = require("lodash.mapvalues");
 
@@ -57,6 +57,12 @@ function createTransforms<TCurrentProps>(): TransformsType<TCurrentProps> {
             mapDispatchToProps: ((dispatch: (action: any) => void, ownProps: TCurrentProps) => TDispatchProps) | null | undefined,
         ) {
             return connect(mapStateToProps, mapDispatchToProps) as Transform<TCurrentProps, InnerProps<TCurrentProps, TStateProps & TDispatchProps>>;
+        },
+
+        withProps<TNewProps extends {}>(
+            createNewProps: (props: TCurrentProps) => TNewProps
+        ) {
+            return withProps(createNewProps) as Transform<TCurrentProps, InnerProps<TCurrentProps, TNewProps>>;
         },
 
         omitProps<TPropsToOmit extends keyof TCurrentProps>() {

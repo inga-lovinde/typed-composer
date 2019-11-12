@@ -9,7 +9,11 @@ describe("React composer usage suite", () => {
     it("should work as expected", () => {
         const logData = [];
 
-        const Component = createReactComposer<{ title: string }>()
+        const Component = createReactComposer<{ titleRaw: string }>()
+            .withProps(({ titleRaw }) => ({
+                title: `${titleRaw.substring(0, 1).toUpperCase()}${titleRaw.substring(1).toLowerCase()}`,
+            }))
+            .omitProps<'titleRaw'>()
             .withStateHandlers(
                 10 as (number | string),
                 "counter",
@@ -51,7 +55,7 @@ describe("React composer usage suite", () => {
                 </div>
             ));
 
-        const wrapper = mount(<Component title="Hello"/>);
+        const wrapper = mount(<Component titleRaw="hElLo"/>);
         equal(wrapper.find('.text').text(), "Hello-36");
         wrapper.find('.increment').simulate('click');
         equal(wrapper.find('.text').text(), "Hello-49");
